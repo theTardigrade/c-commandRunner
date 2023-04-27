@@ -61,7 +61,7 @@ static void f_handle_daemon()
 	printf( "PID: %d\n", n_pid );
 
 	if ( n_pid < 0 )
-    	exit( EXIT_FAILURE );
+		exit( EXIT_FAILURE );
 
 	if ( n_pid > 0 )
 		exit( EXIT_SUCCESS );
@@ -69,7 +69,7 @@ static void f_handle_daemon()
 	n_pid = setsid();
 
 	if ( n_pid < 0 )
-        exit( EXIT_FAILURE );
+		exit( EXIT_FAILURE );
 
 	freopen( "/dev/null", "a", stdout );
 }
