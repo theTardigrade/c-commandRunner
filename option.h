@@ -8,6 +8,7 @@
 		STR_s_datum_t* ps_args;
 		STR_s_datum_t* ps_command;
 		STR_s_datum_t* ps_command_with_args;
+		unsigned long n_iterations;
 		bool b_daemon;
 	} OPT_s_datum_t;
 
