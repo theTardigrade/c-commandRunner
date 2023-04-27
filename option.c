@@ -86,8 +86,8 @@ static void f_handle_command( const OPT_s_datum_t* ps_option_datum )
 
 void OPT_f_handle( const OPT_s_datum_t* ps_option_datum )
 {
-	// if ( ps_option_datum->b_daemon )
-	// 	f_handle_daemon();
+	if ( ps_option_datum->b_daemon )
+		f_handle_daemon();
 
 	if ( ps_option_datum->ps_command != NULL )
 		f_handle_command( ps_option_datum );
