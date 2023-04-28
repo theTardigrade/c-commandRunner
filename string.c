@@ -91,11 +91,13 @@ void STR_f_increase_capacity( STR_s_datum_t* ps_datum, int n_capacity )
 	char* pc_value_old = ps_datum->pc_value;
 	char* pc_value = MEM_f_alloc( n_capacity );
 
-	for ( int n = 0; n < n_length; ++n )
-		pc_value[n] = pc_value_old[n];
-
 	if ( ps_datum->b_allocated )
+	{
+		for ( int n = 0; n < n_length; ++n )
+			pc_value[n] = pc_value_old[n];
+
 		MEM_f_free( pc_value_old );
+	}
 	else
 		ps_datum->b_allocated = true;
 
@@ -114,6 +116,12 @@ void STR_f_append_raw( STR_s_datum_t* ps_datum, int n_length, const char* pc_val
 
 	if ( n_length == 0 )
 		return;
+
+	if ( n_length == 1 )
+	{
+		STR_f_append_char_raw( ps_datum, pc_value[0] );
+		return;
+	}
 
 	const int n_length_old = ps_datum->n_length;
 	const int n_length_new = n_length_old + n_length;
