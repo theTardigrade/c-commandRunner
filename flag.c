@@ -101,18 +101,18 @@ void FLA_f_free( FLA_s_data_t* ps_data )
 static int f_find_index_by_key_raw( FLA_s_data_t* ps_data, int n_key_len, const char* pc_key )
 {
 	if ( ps_data == NULL || pc_key == NULL )
-		return NULL;
+		return -1;
 
 	if ( n_key_len < 0 )
 		for ( n_key_len = 0; pc_key[n_key_len] != '\0'; ++n_key_len )
 		{}
 
 	if ( n_key_len == 0 )
-		return NULL;
+		return -1;
 
 	for ( int n_index = ps_data->n_size - 1; n_index >= 0; --n_index )
 	{
-		const FLA_s_datum_t* ps_datum = &( ps_data->as_data[n] );
+		const FLA_s_datum_t* ps_datum = &( ps_data->as_data[n_index] );
 		const STR_s_datum_t* ps_datum_key = ps_datum->ps_key;
 		
 		if ( ps_datum_key->n_length != n_key_len )
@@ -122,7 +122,7 @@ static int f_find_index_by_key_raw( FLA_s_data_t* ps_data, int n_key_len, const 
 
 		for ( int n_2 = 0; n_2 < n_key_len; ++n_2 )
 		{
-			if ( ps_datum_key->pc_value[n] != pc_key[n] )
+			if ( ps_datum_key->pc_value[n_2] != pc_key[n_2] )
 			{
 				b_match = false;
 				break;
