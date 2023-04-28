@@ -98,7 +98,7 @@ void FLA_f_free( FLA_s_data_t* ps_data )
 	MEM_f_free( ps_data );
 }
 
-const FLA_s_datum_t* FLA_f_find_by_key_raw( FLA_s_data_t* ps_data, int n_key_len, const char* pc_key )
+static int f_find_index_by_key_raw( FLA_s_data_t* ps_data, int n_key_len, const char* pc_key )
 {
 	if ( ps_data == NULL || pc_key == NULL )
 		return NULL;
@@ -110,7 +110,7 @@ const FLA_s_datum_t* FLA_f_find_by_key_raw( FLA_s_data_t* ps_data, int n_key_len
 	if ( n_key_len == 0 )
 		return NULL;
 
-	for ( int n = ps_data->n_size - 1; n >= 0; --n )
+	for ( int n_index = ps_data->n_size - 1; n_index >= 0; --n_index )
 	{
 		const FLA_s_datum_t* ps_datum = &( ps_data->as_data[n] );
 		const STR_s_datum_t* ps_datum_key = ps_datum->ps_key;
@@ -130,46 +130,26 @@ const FLA_s_datum_t* FLA_f_find_by_key_raw( FLA_s_data_t* ps_data, int n_key_len
 		}
 
 		if ( b_match )
-			return ps_datum;
+			return n_index;
 	}
 
-	return NULL;
+	return -1;
+}
+
+const FLA_s_datum_t* FLA_f_find_by_key_raw( FLA_s_data_t* ps_data, int n_key_len, const char* pc_key )
+{
+	int n_index = f_find_index_by_key_raw( ps_data, n_key_len, pc_key );
+
+	return (
+		( n_index >= 0 )
+			? &( ps_data->as_data[n_index] )
+			: NULL
+	);
 }
 
 bool FLA_f_contains_by_key_raw( FLA_s_data_t* ps_data, int n_key_len, const char* pc_key )
 {
-	if ( ps_data == NULL || pc_key == NULL )
-		return NULL;
+	int n_index = f_find_index_by_key_raw( ps_data, n_key_len, pc_key );
 
-	if ( n_key_len < 0 )
-		for ( n_key_len = 0; pc_key[n_key_len] != '\0'; ++n_key_len )
-		{}
-
-	if ( n_key_len == 0 )
-		return NULL;
-
-	for ( int n = ps_data->n_size - 1; n >= 0; --n )
-	{
-		const FLA_s_datum_t s_datum = ps_data->as_data[n];
-		const STR_s_datum_t* ps_datum_key = s_datum.ps_key;
-		
-		if ( ps_datum_key->n_length != n_key_len )
-			continue;
-
-		bool b_match = true;
-
-		for ( int n_2 = 0; n_2 < n_key_len; ++n_2 )
-		{
-			if ( ps_datum_key->pc_value[n] != pc_key[n] )
-			{
-				b_match = false;
-				break;
-			}
-		}
-
-		if ( b_match )
-			return true;
-	}
-
-	return false;
+	return ( n_index >= 0 );
 }
